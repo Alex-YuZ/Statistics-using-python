@@ -59,6 +59,9 @@ def t_test(to_compare, alpha_level=0.05, test_type='right_tail',
             else:
                 res = conlusions[1]
 
+    # Cohen's d
+    cohen = (sample_mean - to_compare)/sample_std
+
     print_out = """
     ========= {9} t-Test Summary ==========
     
@@ -70,6 +73,7 @@ def t_test(to_compare, alpha_level=0.05, test_type='right_tail',
     t-critical: {3:.3f}
     p-value: {7:.3f}
     alpha-level: {8}
+    cohen's d: {10:.3f}
     conclusion: {4}
     
     ================= END =================
@@ -83,4 +87,5 @@ def t_test(to_compare, alpha_level=0.05, test_type='right_tail',
                            sample_size, 
                            dof, p_value, 
                            alpha_level, 
-                           test_kind))
+                           test_kind, 
+                           cohen))
