@@ -10,7 +10,7 @@ def t_test(to_compare, alpha_level=0.05, test_type='right_tail',
         sample_std = np.std(sample, ddof=1)
         
     else:
-        dof=sample_size - 1
+        dof = sample_size - 1
 
     # Calculate t statistic
     t_statistic = (sample_mean - to_compare)/(sample_std/np.sqrt(sample_size))
@@ -61,6 +61,9 @@ def t_test(to_compare, alpha_level=0.05, test_type='right_tail',
                 
     # Cohen's d
     cohen = (sample_mean - to_compare)/sample_std
+    
+    # r_sqrd
+    r2 = t_statistic**2/(t_statistic**2 + dof)
 
     print_out = """
     =============== Reports ==============
@@ -82,6 +85,7 @@ def t_test(to_compare, alpha_level=0.05, test_type='right_tail',
       
         **Effect Size**
           Cohen's d: {10:.3f}
+          r2: {11: .3f}
     
         Conclusion: {4}
     
@@ -97,4 +101,5 @@ def t_test(to_compare, alpha_level=0.05, test_type='right_tail',
                            dof, p_value, 
                            alpha_level, 
                            test_kind, 
-                           cohen))
+                           cohen, 
+                           r2))
