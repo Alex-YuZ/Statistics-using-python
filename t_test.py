@@ -58,25 +58,34 @@ def t_test(to_compare, alpha_level=0.05, test_type='right_tail',
                 res = conlusions[0]
             else:
                 res = conlusions[1]
-
+                
     # Cohen's d
     cohen = (sample_mean - to_compare)/sample_std
 
     print_out = """
-    ========= {9} t-Test Summary ==========
+    =============== Reports ==============
     
-    sample size: {5}
-    degree of freedom: {6}
-    sample mean: {0:.3f}
-    sample stardard deviation: {1:.3f}
-    t-statistic: {2:.3f}
-    t-critical: {3:.3f}
-    p-value: {7:.3f}
-    alpha-level: {8}
-    cohen's d: {10:.3f}
-    conclusion: {4}
+        **Descriptive Statistics Summary**
+
+          sample size: {5}
+          sample mean: {0:.3f}
+          sample SD: {1:.3f}
+      
+        **Inferential Statistics Summary**
+
+          Test Type: One-Sample {9} t-test
+          degree of freedom: {6}
+          p-value: {7:.5f}
+          t-statistic: {2:.3f}
+          t-critical: {3:.3f}
+          alpha-level: {8}
+      
+        **Effect Size**
+          Cohen's d: {10:.3f}
     
-    ================= END =================
+        Conclusion: {4}
+    
+    ================== END =================
     """
 
     print(print_out.format(sample_mean, 
