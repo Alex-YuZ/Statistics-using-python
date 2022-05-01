@@ -13,7 +13,8 @@ def t_test(to_compare, alpha_level=0.05, test_type='right_tail',
         dof = sample_size - 1
 
     # Calculate t statistic
-    t_statistic = (sample_mean - to_compare)/(sample_std/np.sqrt(sample_size))
+    se = sample_std/np.sqrt(sample_size)
+    t_statistic = (sample_mean - to_compare)/se
     
     # Define conlusions context
     conlusions = ["Reject the NULL as statistically significant!", "Fail to reject the NULL."]
@@ -64,6 +65,16 @@ def t_test(to_compare, alpha_level=0.05, test_type='right_tail',
     
     # r_sqrd
     r2 = t_statistic**2/(t_statistic**2 + dof)
+    
+    # margin of error
+    t_critical1 = t.ppf(alpha_level/2, dof)
+    moe = abs(t_critical1)*se
+    
+    # CI
+    
+    lower = sample_mean - moe
+    upper = sample_mean + moe
+    ci = "{0:.1%} Confidence Interval=({1:.2f}, {2:.2f})".format(1-alpha_level, lower, upper)
 
     print_out = """
     =============== Reports ==============
@@ -82,6 +93,8 @@ def t_test(to_compare, alpha_level=0.05, test_type='right_tail',
           t-statistic: {2:.3f}
           t-critical: {3:.3f}
           alpha-level: {8}
+          margin of error: {13:.2f}
+          {12}
       
         **Effect Size**
           Cohen's d: {10:.3f}
@@ -102,4 +115,6 @@ def t_test(to_compare, alpha_level=0.05, test_type='right_tail',
                            alpha_level, 
                            test_kind, 
                            cohen, 
-                           r2))
+                           r2, 
+                           ci, 
+                           moe))
