@@ -124,15 +124,16 @@ def within_t_test(to_compare, alpha_level=0.05, test_type='two_tail',
     
     
 def between_t_test(group1, group2, alpha_level=0.05, test_type='two_tail'):
-    group1 = np.array([.4, .36, .2, .32, .45, .28])
-    group2 = np.array([.41, .39, .18, .23, .35])
 
     size1 = group1.shape[0]
     size2 = group2.shape[0]
+    
     std1 = np.std(group1, ddof=1)
     std2 = np.std(group2, ddof=1)
+    
     mean1 = np.mean(group1)
     mean2 = np.mean(group2)
+    
     ddof = size1 + size2 -2
 
     se = np.sqrt(std1**2/size1 + std2**2/size2)
@@ -163,13 +164,59 @@ def between_t_test(group1, group2, alpha_level=0.05, test_type='two_tail'):
     elif test_type == 'two_tail':
         test_kind = "Two-Tailed"
         p_value = t.sf(abs(t_statistic), ddof)*2
-        t_critical_abs = abs(t.ppf(alpha_level/2, ddof))
+        t_critical = abs(t.ppf(alpha_level/2, ddof))
         
-        if (t_statistic >= 0 and t_statistic >= t_critical_abs) or \
-        (t_statistic <= 0 and t_statistic <= -t_critical_abs):
+        if (t_statistic >= 0 and t_statistic >= t_critical) or \
+        (t_statistic <= 0 and t_statistic <= -t_critical):
             res = conlusions[0]
             
         else:
             res = conlusions[1]
                 
-    print('t_statistic:', t_statistic, '\n', 't_critical:', t_critical_abs, '\n', 'conclusion:', res)
+    print_out = """
+    =============== Reports ==============
+    
+        **Descriptive Statistics Summary**
+
+          sample-1 size: {0}
+          sample-1 mean: {1:.3f}
+          sample-1 SD: {2:.4f}
+          
+          sample-2 size: {3}
+          sample-2 mean: {4:.3f}
+          sample-2 SD: {5:.4f}
+          
+          Standard Error: {6:.4f}
+      
+        **Inferential Statistics Summary**
+
+          Test Type: Between-Group {13} t-Test
+          degree of freedom: {7}
+          p-value: {8:.5f}
+          t-statistic: {9:.3f}
+          t-critical: {10:.3f}
+          alpha-level: {11}
+      
+            
+          ---------------------------------
+          
+    Conclusion: {12}
+    
+    ================== END =================
+    """
+
+    print(print_out.format(size1, 
+                           mean1, 
+                           std1, 
+                           size2, 
+                           mean2, 
+                           std2, 
+                           se, 
+                           ddof, 
+                           p_value, 
+                           t_statistic, 
+                           t_critical, 
+                           alpha_level, 
+                           res, 
+                           test_kind
+                           ))
