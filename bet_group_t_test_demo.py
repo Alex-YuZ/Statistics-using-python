@@ -2,20 +2,21 @@ import pandas as pd
 import numpy as np
 from t_test import between_t_test
 
+def load_data(filename):
+    df = pd.read_csv(filename)
+    s1 = df.s1[df.s1.notna()].to_numpy()
+    s2 = df.s2[df.s2.notna()].to_numpy()
+    
+    return df, s1, s2
 
 # between-group acne medicine demo
-acne = pd.read_csv('acne.csv')
+acne, g1, g2 = load_data('acne.csv')
 print(acne)
 
-g1 = acne.group1[acne.group1.notna()].to_numpy()
-g2 = acne.group2[acne.group2.notna()].to_numpy()
 
 # between-group avg_food_price demo
-food = pd.read_csv('avg_food_price.csv')
+food, g, w = load_data('avg_food_price.csv')
 print(food)
-
-g = food.gettysburg[food.gettysburg.notna()].to_numpy()
-w = food.wilma[food.wilma.notna()].to_numpy()
 
 
 if __name__ == '__main__':
