@@ -176,6 +176,21 @@ def between_t_test(group1, group2, alpha_level=0.05, test_type='two_tail'):
             
         else:
             res = conlusions[1]
+            
+    # r_sqrd
+    r2 = t_statistic**2/(t_statistic**2 + ddof)
+    
+    # margin of error
+    t_critical1 = t.ppf(alpha_level/2, ddof)
+    moe = abs(t_critical1)*se
+    
+    # mean diffs
+    mean_diff = mean1 - mean2
+    
+    # CI
+    lower = mean_diff - moe
+    upper = mean_diff + moe
+    ci = "{0:.1%} Confidence Interval = ({1:.2f}, {2:.2f})".format(1-alpha_level, lower, upper)
                 
     print_out = """
     =============== Reports ==============
@@ -200,6 +215,11 @@ def between_t_test(group1, group2, alpha_level=0.05, test_type='two_tail'):
           t-statistic: {9:.3f}
           t-critical: {10:.3f}
           alpha-level: {11}
+          margin of error: {15:.2f}
+          {14}
+      
+        **Effect Size**
+          r2: {16: .3f}
       
             
           ---------------------------------
@@ -222,5 +242,8 @@ def between_t_test(group1, group2, alpha_level=0.05, test_type='two_tail'):
                            t_critical, 
                            alpha_level, 
                            res, 
-                           test_kind
+                           test_kind, 
+                           ci, 
+                           moe, 
+                           r2
                            ))
