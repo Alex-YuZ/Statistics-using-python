@@ -131,17 +131,27 @@ def between_t_test(group1, group2, alpha_level=0.05, test_type='two_tail'):
 
     size1 = group1.shape[0]
     size2 = group2.shape[0]
-    
+
     std1 = np.std(group1, ddof=1)
     std2 = np.std(group2, ddof=1)
     
     mean1 = np.mean(group1)
     mean2 = np.mean(group2)
     
+    ddof1 = size1 - 1
+    ddof2 = size2 - 1
     ddof = size1 + size2 -2
+    
+    ssq1 = np.sum((group1 - mean1)**2)
+    ssq2 = np.sum((group2 - mean2)**2)
+    
+    pooled_var = (ssq1 + ssq2)/(ddof1 + ddof2)
 
     se = np.sqrt(std1**2/size1 + std2**2/size2)
+    corrected_se = np.sqrt(pooled_var/size1 + pooled_var/size2)
+    
     t_statistic = (mean1 - mean2)/se
+    corr_t_statistic = (mean1 - mean2)/corrected_se
     
     # Define conlusions context
     conlusions = ["Reject the NULL as statistically significant!", "Fail to reject the NULL."]
@@ -169,12 +179,18 @@ def between_t_test(group1, group2, alpha_level=0.05, test_type='two_tail'):
         test_kind = "Two-Tailed"
         p_value = t.sf(abs(t_statistic), ddof)*2
         t_critical = abs(t.ppf(alpha_level/2, ddof))
-        
-        if (t_statistic >= 0 and t_statistic >= t_critical) or \
-        (t_statistic <= 0 and t_statistic <= -t_critical):
+            
+        if t_statistic >= 0 and t_statistic >= t_critical:
+            res = conlusions[0]
+            
+        elif t_statistic <= 0 and t_statistic <= -t_critical:
+            t_critical = -t_critical
             res = conlusions[0]
             
         else:
+            if t_statistic <=0:
+                t_critical = -t_critical
+            
             res = conlusions[1]
             
     # r_sqrd
@@ -200,12 +216,16 @@ def between_t_test(group1, group2, alpha_level=0.05, test_type='two_tail'):
           sample-1 size: {0}
           sample-1 mean: {1:.3f}
           sample-1 SD: {2:.4f}
+          sample-1 dof: {20}
           
           sample-2 size: {3}
           sample-2 mean: {4:.3f}
           sample-2 SD: {5:.4f}
+          sample-2 dof: {21}
           
+          Pooled Variance: {18: .4f}
           Standard Error: {6:.4f}
+          Standard Error (Corrected): {17: .4f}
       
         **Inferential Statistics Summary**
 
@@ -213,6 +233,7 @@ def between_t_test(group1, group2, alpha_level=0.05, test_type='two_tail'):
           degree of freedom: {7}
           p-value: {8:.5f}
           t-statistic: {9:.3f}
+          t-statistic (corrected): {19: .3f}
           t-critical: {10:.3f}
           alpha-level: {11}
           margin of error: {15:.2f}
@@ -245,5 +266,10 @@ def between_t_test(group1, group2, alpha_level=0.05, test_type='two_tail'):
                            test_kind, 
                            ci, 
                            moe, 
-                           r2
+                           r2, 
+                           corrected_se, 
+                           pooled_var, 
+                           corr_t_statistic, 
+                           ddof1, 
+                           ddof2
                            ))
