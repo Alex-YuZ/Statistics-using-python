@@ -1,3 +1,7 @@
+import pandas as pd
+import numpy as np
+from scipy.stats import t
+
 def within_t_test(to_compare, alpha_level=0.05, test_type='two_tail', 
            sample=None, sample_mean=None, sample_std=None, sample_size=None):
     
