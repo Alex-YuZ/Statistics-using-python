@@ -29,3 +29,4 @@ def cal_f(*args, alpha_level=0.05):
     ms_within = ss_within/dof_within
     f_statistic = ms_between/ms_within
     f_critical = f.ppf(1-alpha_level, dof_between, dof_within)
+    p_value = f.sf(f_statistic, dof_between, dof_within)
