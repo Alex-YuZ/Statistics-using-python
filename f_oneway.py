@@ -23,10 +23,67 @@ def cal_f(*args, alpha_level=0.05):
     dof_between = num_groups - 1
     dof_within = np.size(concate_np) - num_groups
     grand_mean = np.mean(concate_np)
+    
     ss_between = np.sum(sample_sizes*(group_means - grand_mean)**2)
     
     ms_between = ss_between/dof_between
     ms_within = ss_within/dof_within
+    
     f_statistic = ms_between/ms_within
     f_critical = f.ppf(1-alpha_level, dof_between, dof_within)
     p_value = f.sf(f_statistic, dof_between, dof_within)
+    
+    explained_var = ss_between/(ss_between + ss_within)
+    
+    group_means_ = np.around(group_means, 2)
+    
+    conclusions = ['Reject the Null as statistically significant.', 'Fail to reject the Null.']
+    
+    res = conclusions[0] if f_statistic >= f_critical else conclusions[1]
+    
+    print_out = """
+    =================ONE-WAY ANOVA TEST REPORT=================
+    
+      Size in Each Sample: {0}
+      Mean in Each Sample: {1}
+      Grand Mean: {2: .2f}
+      
+      Between-Groups
+        Sum of Squares: {3: .4f}
+        Degree of Freedom: {4}
+        Mean Squares: {5: .4f}
+        
+      Within-Groups
+        Sum of Squares: {6: .4f}
+        Degree of Freedom: {7}
+        Mean Squares: {8: .4f}
+        
+      F Statistic: {9: .4f}
+      P Value: {10: .4f}
+      F Critical: {11: .4f}
+      
+      Explained Variance (Eta_sqd): {12: .4f}
+      
+      ---------------------------------
+      Conclusion: {13}
+      
+    ============================END============================
+      
+    
+    
+    """
+    
+    print(print_out.format(sample_sizes, 
+                           group_means_, 
+                           grand_mean, 
+                           ss_between, 
+                           dof_between, 
+                           ms_between, 
+                           ss_within, 
+                           dof_within, 
+                           ms_within, 
+                           f_statistic, 
+                           p_value, 
+                           f_critical, 
+                           explained_var, 
+                           res))
