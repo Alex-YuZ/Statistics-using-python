@@ -16,12 +16,13 @@ def chi2_goodness_of_fit(obs, exp, alpha=.05):
     # Format result string
     print_out = """
     ============== Pearson's Chi-Square Test =============
+        DoF: {5}
         Chi Square is: {0:.4f}
         P value is {1:.4f}
         
         Chi2 Critical Value at alpha={2}: {3:.4f}
     ----------------------------------
-        {4}
+        CONCLUSION: {4}
     ======================== END =========================
     """
     conc = "Reject the NULL" if chi_stat >= chi_critical else "Fail to reject the NULL"
@@ -30,4 +31,5 @@ def chi2_goodness_of_fit(obs, exp, alpha=.05):
                        p_val, 
                        alpha, 
                        chi_critical, 
-                       conc))
+                       conc, 
+                       dof))
