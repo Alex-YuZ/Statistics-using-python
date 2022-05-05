@@ -3,13 +3,17 @@ import numpy as np
 import pandas as pd
 
 def chi2_goodness_of_fit(obs, exp, alpha=.05):
-    
+    """Execute chi-square goodness of fit test on obs. and exp. data"""
+    # Calculate Chi-Square statistic and P-value
     chi_stat, p_val = chisquare([41,59], [33,67])
     
+    # Calculate degree of freedom
     dof = len(obs) - 1
     
+    # Calculate Chi-Square critical value given alpha-level
     chi_critical = chi2.ppf(1-alpha, dof)
     
+    # Format result string
     print_out = """
     ============== Pearson's Chi-Square Test =============
         Chi Square is: {0:.4f}
