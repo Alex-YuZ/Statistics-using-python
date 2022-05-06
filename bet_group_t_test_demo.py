@@ -2,10 +2,11 @@ import pandas as pd
 import numpy as np
 from t_test import between_t_test
 import argparse
+from argparse import RawTextHelpFormatter
 
 
 def load_data(filename):
-    df = pd.read_csv(filename)
+    df = pd.read_csv("./HypothesisTest_data/"+filename)
     
     # Select non-null values
     mask0 = df.iloc[:, 0].notna()
@@ -24,7 +25,20 @@ def main(filename):
     
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Choose a dataset to run between-group t-Test")
+    descr_str = """
+    Choose a dataset to run between-group t-Test.
+      Available datasets: 
+        (1)acne.csv
+        (2)avg_food_price.csv
+      
+    Usage Example:
+      If we want to take a look at how the between-group t-test work on dataset `acne.csv`,
+      we can use the following codes in the terminal:
+      
+      ~$ python bet_group_t_test_demo.py --dataset acne.csv
+      
+    """
+    parser = argparse.ArgumentParser(description=descr_str, formatter_class=RawTextHelpFormatter)
     
     parser.add_argument('--dataset', type=str, help='the dataset you want to execute t-test on')
     
