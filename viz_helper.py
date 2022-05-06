@@ -4,7 +4,12 @@ import pandas as pd
 import seaborn as sns
 
 def ecdf(df, x_label):
-    """Plot ecdf based on a given dataframe and column name"""
+    """Plot ecdf based on a given dataframe and column name
+
+    Args:
+        df (pd.DataFrame): dataset
+        x_label (_type_): feature name in the dataframe for plotting
+    """
     x = np.sort(df[x_label])
     length = len(df[x_label])
     y = np.arange(1, length+1) / length
@@ -15,7 +20,7 @@ def ecdf(df, x_label):
     plt.ylabel('ECDF')
     
     # Keep data off plot edges
-    plt.margins(.25);
+    plt.margins(.05);
     
     
     
