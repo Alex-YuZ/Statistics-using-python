@@ -3,24 +3,6 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
-  
-def ecdf(data):
-    """Map the given data to (x, y) for plotting
-
-    Args:
-        data (list): the data series to be plotted on the ecdf plot
-    """
-    # Get the data length
-    dt_length = len(data)
-    
-    # Sort the given data in ascending order
-    x = np.sort(data)
-    
-    # Mark each data point as percentage
-    y = np.arange(1, dt_length+1) / dt_length
-    
-    return x, y
-
 
 def bernoulli_trials_plot(simulation, col_name, normed=True):
     """Plot the distribution of bernoulli trials
@@ -50,3 +32,11 @@ def bernoulli_trials_plot(simulation, col_name, normed=True):
                     x=col_name, 
                     y='counts', 
                     color=sns.color_palette()[0]);
+        
+        
+def print_eq(slope, intercept, x_var, y_var):
+    formula = """
+    {3} = {0:.4f}*{2} + {1:.4f}
+    """
+    print(formula.format(slope, intercept, x_var, y_var))
+
