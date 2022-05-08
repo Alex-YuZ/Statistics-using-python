@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
-def ecdf(df, x_label):
+def draw_ecdf(df, x_label):
     """Plot ecdf based on a given dataframe and column name
 
     Args:
@@ -21,8 +21,35 @@ def ecdf(df, x_label):
     
     # Keep data off plot edges
     plt.margins(.05);
+ 
+   
+def ecdf_plot(data, x_title):
+    x, y = ecdf(data)
+    # Plot and set properties
+    plt.plot(x, y, marker='.', linestyle='')
+    plt.xlabel("{}".format(x_title))
+    plt.ylabel('ECDF')
+    
+    # Keep data off plot edges
+    plt.margins(.05);
     
     
+def ecdf(data):
+    """Map the given data to (x, y) for plotting
+
+    Args:
+        data (list): the data series to be plotted on the ecdf plot
+    """
+    # Get the data length
+    dt_length = len(data)
+    
+    # Sort the given data in ascending order
+    x = np.sort(data)
+    
+    # Mark each data point as percentage
+    y = np.arange(1, dt_length+1) / dt_length
+    
+    return x, y
     
 def bernoulli_trials_plot(simulation, col_name, normed=True):
     """Plot the distribution of bernoulli trials
