@@ -20,7 +20,17 @@ def draw_bs_reps(data, func, size=1):
     return bs_replicates
 
 def draw_bs_pairs_linreg(x, y, size=1):
-    """Perform pairs bootstrap for linear regression."""
+    """Perform pairs bootstrap for linear regression.
+
+    Args:
+        x (numpy.array): predictor variable array
+        y (numpy.array): response varaible array
+        size (int, optional): _description_. Defaults to 1.
+
+    Returns:
+        bs_slope_reps (numpy.array): bootstrapped samples of slopes
+        bs_intercept_reps (numpy.array): bootstrapped samples of intercepts
+    """
 
     # Set up array of indices to sample from: inds
     inds = np.arange(len(x))
