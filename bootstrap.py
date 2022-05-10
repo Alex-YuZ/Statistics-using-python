@@ -1,3 +1,4 @@
+
 import numpy as np
 import pandas as pd
 
@@ -18,6 +19,7 @@ def draw_bs_reps(data, func, size=1):
         bs_replicates[i] = func(bs_sample)
 
     return bs_replicates
+
 
 def draw_bs_pairs_linreg(x, y, size=1):
     """Perform pairs bootstrap for linear regression.
@@ -50,6 +52,7 @@ def draw_bs_pairs_linreg(x, y, size=1):
 
     return bs_slope_reps, bs_intercept_reps
 
+
 def permutation_sample(data1, data2):
     """Generate a permutation sample from two data sets.
 
@@ -76,3 +79,35 @@ def permutation_sample(data1, data2):
     perm_sample_2 = permuted_data[len(data1):]
 
     return perm_sample_1, perm_sample_2
+
+
+def draw_perm_reps(data_1, data_2, func, size=1):
+    """Generate multiple permutation replicates.
+
+    Args:
+        data1 (numpy.array): 1d numpy array for dataset1 to be permutated.
+        data2 (numpy.array): 1d numpy array for dataset2 to be permutated.
+        func (self-defined or built-in function): statistic calculation method
+        size (int, optional): _description_. Defaults to 1.
+
+    Returns:
+        perm_replicates: numpy.array
+    """
+
+    # Initialize array of replicates: perm_replicates
+    perm_replicates = np.empty(size)
+
+    for i in range(size):
+        
+         # Generate permutation sample
+        data = np.concatenate([data_1, data_2])
+        permuted_data = np.random.permutation(data)
+        perm_sample_1 = permuted_data[:len(data_1)]
+        perm_sample_2 = permuted_data[len(data_1):]
+
+        # Compute the test statistic
+        perm_replicates[i] = func(perm_sample_1, perm_sample_2)
+
+    return perm_replicates
+
+
