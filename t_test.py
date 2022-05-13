@@ -125,6 +125,22 @@ def t_test_1sample(to_compare, alpha_level=0.05, alternative='two_sided',
                            moe))
     
     
+def t_test_paired_sample(group1, group2, alpha_level=.05, alternative="two_sided"):
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
 def t_test_2sample(group1, group2, alpha_level=0.05, test_type='two_tail'):
