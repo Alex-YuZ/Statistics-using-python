@@ -123,44 +123,65 @@ def t_test_1sample(to_compare, alpha_level=0.05, alternative='two_sided',
                            r2, 
                            ci, 
                            moe))
-    
-    
+
+
 def t_test_paired_sample(group1, group2, alpha_level=.05, alternative="two_sided"):
+    """execute paired-sample t-test
+
+    Args:
+        group1 (array-like): _sample data 1
+        group2 (array-like): _sample data 2
+        alpha_level (float, optional): probability threshold to 
+            reject/retain the null_. Defaults to .05.
+        alternative (str, {'two_sided', 'less', 'greater'}): direction of t-test. Defaults to "two_sided".
+    """
+    # Convert to numpy arrays
     gp1_np = np.array(group1)
     gp2_np = np.array(group2)
     
+    # length of samples
     size = len(gp1_np)
     
+    # degree of freedom
     dof = size - 1
     
+    # mean of each sample
     mean_gp1 = gp1_np.mean()
     mean_gp2 = gp2_np.mean()
     
+    # mean of differences (MD)
     mean_diff = np.mean(gp1_np - gp2_np)
     
+    # standard deviation of MD
     s_d = np.std(gp1_np - gp2_np, ddof=1)
     
-    
-    
+    # standard error of MD
     se = s_d/np.sqrt(size)
     
+    # calculate t-statistic
     t_statistic = mean_diff / se
     
+    # calcluate effect size in cohen's d
     cohens_d = mean_diff / s_d
     
+    # find t critical value for calculating CI
     t_critical_ci = t.ppf(.975, df=dof)
     
+    # margin of error
     moe = t_critical_ci*se
     
+    # CI intervals
     lower, upper = mean_diff - moe, mean_diff + moe
     
     ci = "{0:.1%} Confidence Interval = ({1:.2f}, {2:.2f})".format(1-alpha_level, lower, upper)
     
+    # calculate effect size in r2
     r2 = t_statistic**2/(t_statistic**2 + dof)
     
     # Define conlusions context
     conclusions = ["Reject the NULL as statistically significant!", "Fail to reject the NULL."]
     
+    # logic for 'two-tailed' t-test
     if alternative == 'two_sided':
         t_critical = t.ppf(1-alpha_level/2, df=dof)
         test_kind = 'Two-Tailed'
@@ -170,7 +191,9 @@ def t_test_paired_sample(group1, group2, alpha_level=.05, alternative="two_sided
             
         else:
             res = conclusions[1]
-            
+        t_critical_formatted = "(+/-){:.3f}".format(t_critical)
+    
+    # when alternative hypothesis is 'less than'
     elif alternative == 'less':
         t_critical = t.ppf(alpha_level, df=dof)
         test_kind = 'Left-Tailed'
@@ -180,7 +203,9 @@ def t_test_paired_sample(group1, group2, alpha_level=.05, alternative="two_sided
             
         else:
             res = conclusions[1]
-            
+        t_critical_formatted = "{:.3f}".format(t_critical)
+    
+    # when alternative hypothesis is 'greater than'       
     elif alternative == 'greater':
         t_critical = t.ppf(1 - alpha_level, df=dof)
         test_kind = 'Right-Tailed'
@@ -190,9 +215,10 @@ def t_test_paired_sample(group1, group2, alpha_level=.05, alternative="two_sided
             
         else:
             res = conclusions[1]
+        t_critical_formatted = "{:.3f}".format(t_critical)
             
     
-    
+    # result formatting
     print_out = """
     =============== Reports ==============
     
@@ -212,7 +238,7 @@ def t_test_paired_sample(group1, group2, alpha_level=.05, alternative="two_sided
           Test Type: Paired-Sample {6} t-test
           p-value: {7:.5f}
           t-statistic: {8:.3f}
-          t-critical: {9:.3f}
+          t-critical: {9}
           alpha-level: {10}
           margin of error: {11:.2f}
           {12}
@@ -237,7 +263,7 @@ def t_test_paired_sample(group1, group2, alpha_level=.05, alternative="two_sided
                            test_kind, 
                            p, 
                            t_statistic, 
-                           t_critical, 
+                           t_critical_formatted, 
                            alpha_level, 
                            moe, 
                            ci, 
@@ -245,22 +271,8 @@ def t_test_paired_sample(group1, group2, alpha_level=.05, alternative="two_sided
                            r2, 
                            res))
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+ 
 def t_test_2sample(group1, group2, alpha_level=0.05, test_type='two_tail'):
 
     size1 = group1.shape[0]
