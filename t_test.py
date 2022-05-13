@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from scipy.stats import t
 
-def t_test_1sample(to_compare, alpha_level=0.05, test_type='two_tail', 
+def t_test_1sample(to_compare, alpha_level=0.05, alternative='two_sided', 
            sample=None, sample_mean=None, sample_std=None, sample_size=None):
     
     if sample is not None:
@@ -24,7 +24,7 @@ def t_test_1sample(to_compare, alpha_level=0.05, test_type='two_tail',
     conlusions = ["Reject the NULL as statistically significant!", "Fail to reject the NULL."]
 
     # Calculate t critical value
-    if test_type == 'left_tail':
+    if alternative == 'less':
         test_kind = "Left-Tailed"
         t_critical = t.ppf(alpha_level, dof)
         p_value = t.sf(abs(t_statistic), dof)
@@ -34,7 +34,7 @@ def t_test_1sample(to_compare, alpha_level=0.05, test_type='two_tail',
         else:
             res = conlusions[1]
 
-    elif test_type == 'right_tail':
+    elif alternative == 'greater':
         test_kind = "Right-Tailed"
         t_critical = t.ppf(1-alpha_level, dof)
         p_value = t.sf(abs(t_statistic), dof)
@@ -44,7 +44,7 @@ def t_test_1sample(to_compare, alpha_level=0.05, test_type='two_tail',
             res = conlusions[1]
             
 
-    elif test_type == 'two_tail':
+    elif alternative == 'two_sided':
         test_kind = "Two-Tailed"
         p_value = t.sf(abs(t_statistic), dof)*2
         if sample_mean >= to_compare:
