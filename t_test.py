@@ -126,7 +126,125 @@ def t_test_1sample(to_compare, alpha_level=0.05, alternative='two_sided',
     
     
 def t_test_paired_sample(group1, group2, alpha_level=.05, alternative="two_sided"):
+    gp1_np = np.array(group1)
+    gp2_np = np.array(group2)
     
+    size = len(gp1_np)
+    
+    dof = size - 1
+    
+    mean_gp1 = gp1_np.mean()
+    mean_gp2 = gp2_np.mean()
+    
+    mean_diff = np.mean(gp1_np - gp2_np)
+    
+    s_d = np.std(gp1_np - gp2_np, ddof=1)
+    
+    
+    
+    se = s_d/np.sqrt(size)
+    
+    t_statistic = mean_diff / se
+    
+    cohens_d = mean_diff / s_d
+    
+    t_critical_ci = t.ppf(.975, df=dof)
+    
+    moe = t_critical_ci*se
+    
+    lower, upper = mean_diff - moe, mean_diff + moe
+    
+    ci = "{0:.1%} Confidence Interval = ({1:.2f}, {2:.2f})".format(1-alpha_level, lower, upper)
+    
+    r2 = t_statistic**2/(t_statistic**2 + dof)
+    
+    # Define conlusions context
+    conclusions = ["Reject the NULL as statistically significant!", "Fail to reject the NULL."]
+    
+    if alternative == 'two_sided':
+        t_critical = t.ppf(1-alpha_level/2, df=dof)
+        test_kind = 'Two-Tailed'
+        p = t.sf(abs(t_statistic), df=dof)*2
+        if abs(t_statistic) >= t_critical:
+            res = conclusions[0]
+            
+        else:
+            res = conclusions[1]
+            
+    elif alternative == 'less':
+        t_critical = t.ppf(alpha_level, df=dof)
+        test_kind = 'Left-Tailed'
+        p = t.sf(abs(t_statistic), df=dof)
+        if t_statistic < t_critical:
+            res = conclusions[0]
+            
+        else:
+            res = conclusions[1]
+            
+    elif alternative == 'greater':
+        t_critical = t.ppf(1 - alpha_level, df=dof)
+        test_kind = 'Right-Tailed'
+        p = t.sf(abs(t_statistic), df=dof)
+        if t_statistic > t_critical:
+            res = conclusions[0]
+            
+        else:
+            res = conclusions[1]
+            
+    
+    
+    print_out = """
+    =============== Reports ==============
+    
+        **Descriptive Statistics Summary**
+
+          sample size: {0}
+          degree of freedom: {1}
+          
+          mean of sample-1: {2:.3f}
+          mean of sample-2: {3:.3f}
+          
+          difference of means: {4:. 3f}
+          SD of differences of means: {5:.3f}
+      
+        **Inferential Statistics Summary**
+
+          Test Type: Paired-Sample {6} t-test
+          p-value: {7:.5f}
+          t-statistic: {8:.3f}
+          t-critical: {9:.3f}
+          alpha-level: {10}
+          margin of error: {11:.2f}
+          {12}
+      
+        **Effect Size**
+          Cohen's d: {13:.3f}
+          r2: {14: .3f}
+            
+          ---------------------------------
+          
+    Conclusion: {15}
+    
+    ================== END =================
+    """
+    
+    print(print_out.format(size, 
+                           dof, 
+                           mean_gp1, 
+                           mean_gp2, 
+                           mean_diff, 
+                           s_d, 
+                           test_kind, 
+                           p, 
+                           t_statistic, 
+                           t_critical, 
+                           alpha_level, 
+                           moe, 
+                           ci, 
+                           cohens_d, 
+                           r2, 
+                           res))
+
     
     
     
