@@ -204,7 +204,7 @@ def t_test_paired_sample(group1, group2, alpha_level=.05, alternative="two_sided
           mean of sample-1: {2:.3f}
           mean of sample-2: {3:.3f}
           
-          difference of means: {4:. 3f}
+          difference of means: {4:.3f}
           SD of differences of means: {5:.3f}
       
         **Inferential Statistics Summary**
