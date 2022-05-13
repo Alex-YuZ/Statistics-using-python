@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from scipy.stats import t
 
-def within_t_test(to_compare, alpha_level=0.05, test_type='two_tail', 
+def t_test_1sample(to_compare, alpha_level=0.05, test_type='two_tail', 
            sample=None, sample_mean=None, sample_std=None, sample_size=None):
     
     if sample is not None:
@@ -127,7 +127,7 @@ def within_t_test(to_compare, alpha_level=0.05, test_type='two_tail',
     
     
     
-def between_t_test(group1, group2, alpha_level=0.05, test_type='two_tail'):
+def t_test_2sample(group1, group2, alpha_level=0.05, test_type='two_tail'):
 
     size1 = group1.shape[0]
     size2 = group2.shape[0]
