@@ -371,7 +371,7 @@ def t_test_2sample(group1, group2, alpha_level=0.05, test_type='two_tail'):
           
           Pooled Variance: {18: .4f}
           Standard Error: {6:.4f}
-          Standard Error (Corrected): {17: .4f}
+          Standard Error (using pooled variance): {17: .4f}
       
         **Inferential Statistics Summary**
 
@@ -379,7 +379,7 @@ def t_test_2sample(group1, group2, alpha_level=0.05, test_type='two_tail'):
           degree of freedom: {7}
           p-value: {8:.5f}
           t-statistic: {9:.3f}
-          t-statistic (corrected): {19: .3f}
+          t-statistic (using pooled variance): {19: .3f}
           t-critical: {10:.3f}
           alpha-level: {11}
           margin of error: {15:.2f}
