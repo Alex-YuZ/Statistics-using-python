@@ -45,3 +45,7 @@ lolamoon = np.array([65, 45, 32, 38])
 single = np.array([8, 7, 10, 6, 9])
 twin = np.array([4, 6, 7, 4, 9])
 triplet = np.array([4, 4, 7, 2, 3])
+
+food_a = np.array([2, 4, 3])
+food_b = np.array([6, 5, 7])
+food_c = np.array([8, 9, 10])
