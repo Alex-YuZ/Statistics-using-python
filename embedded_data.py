@@ -49,3 +49,8 @@ triplet = np.array([4, 4, 7, 2, 3])
 food_a = np.array([2, 4, 3])
 food_b = np.array([6, 5, 7])
 food_c = np.array([8, 9, 10])
+
+placebo = np.array([1.5, 1.3, 1.8, 1.6, 1.3])
+drug1 = np.array([1.6, 1.7, 1.9, 1.2])
+drug2 = np.array([2., 1.4, 1.5, 1.5, 1.8, 1.7, 1.4])
+drug3 = np.array([2.9, 3.1, 2.8, 2.7])
