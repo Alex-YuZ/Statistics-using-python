@@ -273,7 +273,7 @@ def t_test_paired_sample(group1, group2, alpha_level=.05, alternative="two_sided
 
 
  
-def t_test_2sample(group1, group2, alpha_level=0.05, test_type='two_tail'):
+def t_test_2sample(group1, group2, alpha_level=0.05, alternative='two_sided'):
 
     size1 = group1.shape[0]
     size2 = group2.shape[0]
@@ -284,14 +284,14 @@ def t_test_2sample(group1, group2, alpha_level=0.05, test_type='two_tail'):
     mean1 = np.mean(group1)
     mean2 = np.mean(group2)
     
-    ddof1 = size1 - 1
-    ddof2 = size2 - 1
-    ddof = size1 + size2 -2
+    dof1 = size1 - 1
+    dof2 = size2 - 1
+    dof = size1 + size2 -2
     
     ssq1 = np.sum((group1 - mean1)**2)
     ssq2 = np.sum((group2 - mean2)**2)
     
-    pooled_var = (ssq1 + ssq2)/(ddof1 + ddof2)
+    pooled_var = (ssq1 + ssq2)/(dof1 + dof2)
 
     se = np.sqrt(std1**2/size1 + std2**2/size2)
     corrected_se = np.sqrt(pooled_var/size1 + pooled_var/size2)
@@ -300,50 +300,46 @@ def t_test_2sample(group1, group2, alpha_level=0.05, test_type='two_tail'):
     corr_t_statistic = (mean1 - mean2)/corrected_se
     
     # Define conlusions context
-    conlusions = ["Reject the NULL as statistically significant!", "Fail to reject the NULL."]
+    conclusions = ["Reject the NULL as statistically significant!", "Fail to reject the NULL."]
     
-    if test_type == 'left_tail':
+    if alternative == 'less':
         test_kind = 'Left-Tailed'
-        t_critical = t.ppf(alpha_level, ddof)
-        p_value = t.sf(abs(t_statistic), ddof)
+        t_critical = t.ppf(alpha_level, dof)
+        p_value = t.sf(abs(t_statistic), dof)
+        t_critical_formatted = "{:.3f}".format(t_critical)
         
         if t_statistic <= t_critical:
             res = conclusions[0]
         else:
             res = conclusions[1]
             
-    elif test_type == 'right_tail':
+    elif alternative == 'greater':
         test_kind = 'Right-Tailed'
-        t_critical = t.ppf(1-alpha_level, ddof)
-        p_value = t.sf(abs(t_statistic), ddof)
+        t_critical = t.ppf(1-alpha_level, dof)
+        t_critical_formatted = "{:.3f}".format(t_critical)
+        p_value = t.sf(abs(t_statistic), dof)
         if t_statistic >= t_critical:
-            res = conlusions[0]
+            res = conclusions[0]
         else:
-            res = conlusions[1]
+            res = conclusions[1]
             
-    elif test_type == 'two_tail':
+    elif alternative == 'two_sided':
         test_kind = "Two-Tailed"
-        p_value = t.sf(abs(t_statistic), ddof)*2
-        t_critical = abs(t.ppf(alpha_level/2, ddof))
-            
-        if t_statistic >= 0 and t_statistic >= t_critical:
-            res = conlusions[0]
-            
-        elif t_statistic <= 0 and t_statistic <= -t_critical:
-            t_critical = -t_critical
-            res = conlusions[0]
+        p_value = t.sf(abs(t_statistic), dof)*2
+        t_critical = abs(t.ppf(alpha_level/2, dof))
+        t_critical_formatted = "(+/-){:.3f}".format(t_critical)            
+
+        if abs(t_statistic) > abs(t_critical):
+            res = conclusions[0]
             
         else:
-            if t_statistic <=0:
-                t_critical = -t_critical
-            
-            res = conlusions[1]
+            res = conclusions[1]
             
     # r_sqrd
-    r2 = t_statistic**2/(t_statistic**2 + ddof)
+    r2 = t_statistic**2/(t_statistic**2 + dof)
     
     # margin of error
-    t_critical1 = t.ppf(alpha_level/2, ddof)
+    t_critical1 = t.ppf(alpha_level/2, dof)
     moe = abs(t_critical1)*se
     
     # mean diffs
@@ -369,6 +365,8 @@ def t_test_2sample(group1, group2, alpha_level=0.05, test_type='two_tail'):
           sample-2 SD: {5:.4f}
           sample-2 dof: {21}
           
+          mean difference: {22: .2f}
+          
           Pooled Variance: {18: .4f}
           Standard Error: {6:.4f}
           Standard Error (using pooled variance): {17: .4f}
@@ -380,7 +378,7 @@ def t_test_2sample(group1, group2, alpha_level=0.05, test_type='two_tail'):
           p-value: {8:.5f}
           t-statistic: {9:.3f}
           t-statistic (using pooled variance): {19: .3f}
-          t-critical: {10:.3f}
+          t-critical: {10}
           alpha-level: {11}
           margin of error: {15:.2f}
           {14}
@@ -403,10 +401,10 @@ def t_test_2sample(group1, group2, alpha_level=0.05, test_type='two_tail'):
                            mean2, 
                            std2, 
                            se, 
-                           ddof, 
+                           dof, 
                            p_value, 
                            t_statistic, 
-                           t_critical, 
+                           t_critical_formatted, 
                            alpha_level, 
                            res, 
                            test_kind, 
@@ -416,6 +414,7 @@ def t_test_2sample(group1, group2, alpha_level=0.05, test_type='two_tail'):
                            corrected_se, 
                            pooled_var, 
                            corr_t_statistic, 
-                           ddof1, 
-                           ddof2
+                           dof1, 
+                           dof2, 
+                           mean_diff
                            ))
