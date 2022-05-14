@@ -418,3 +418,130 @@ def t_test_2sample(group1, group2, alpha_level=0.05, alternative='two_sided'):
                            dof2, 
                            mean_diff
                            ))
+    
+    
+    
+def t_test_ind_from_stats(x_bar, y_bar, x_size, y_size, 
+                          ss_x=None, ss_y=None, s2_p=None, 
+                          pop_mean_diff=0., dof=None, alpha=.05, 
+                          alternative='two_sided'):
+    """execute independent sample t-test given descriptive statistics
+
+    Args:
+        x_bar (float): _description_
+        y_bar (float): _description_
+        x_size (int): _description_
+        y_size (int): _description_
+        ss_x (float, optional): _description_. Defaults to None.
+        ss_y (float, optional): _description_. Defaults to None.
+        s2_p (float, optional): _description_. Defaults to None.
+        pop_mean_diff (float, optional): _description_. Defaults to 0.
+        dof (_type_, optional): _description_. Defaults to None.
+        alpha (float, optional): _description_. Defaults to .05.
+        alternative (str, optional): _description_. Defaults to 'two_sided'.
+    """
+    
+    mean_diff = x_bar - y_bar - pop_mean_diff
+    x_dof = x_size - 1
+    y_dof = y_size - 1
+    
+    if s2_p is None and ss_x is not None and ss_y is not None:
+        s2_p = (ss_x + ss_y) / (x_dof + y_dof)
+    
+    if dof is None:
+        degree_of_freedom = x_size + y_size -2
+    else:
+        degree_of_freedom = dof
+    
+    se = np.sqrt(s2_p*(1/x_size + 1/y_size))
+    t_statistic = mean_diff / se
+    conclusions = ["Reject the Null.", "Fail to Reject the Null."]
+    # Find t critical value
+    if alternative == 'two_sided':
+        test_type = 'Two-Tailed'
+        t_critical = t.ppf(1-alpha/2, degree_of_freedom)
+        t_critical_formatted = "(+/-){: .3f}".format(t_critical)
+        p_value = t.sf(abs(t_statistic), degree_of_freedom)*2
+        
+        if abs(t_statistic) > t_critical:
+            res = conclusions[0]
+            
+        else:
+            res = conclusions[1]
+        
+    elif alternative == 'less':
+        test_type = 'Left-Tailed'
+        t_critical = t.ppf(alpha, degree_of_freedom)
+        t_critical_formatted = "{: .3f}".format(t_critical)
+        p_value = t.sf(abs(t_statistic), degree_of_freedom)
+        
+        if t_statistic < t_critical:
+            res = conclusions[0]
+            
+        else:
+            res = conclusions[1]
+        
+    elif alternative == 'greater':
+        test_type = 'Right-Tailed'
+        # Better need a try-except logic here
+            
+        t_critical = t.ppf(1-alpha, degree_of_freedom)
+        t_critical_formatted = "{: .3f}".format(t_critical)
+        p_value = t.sf(t_statistic, degree_of_freedom)
+        
+        if t_statistic > t_critical:
+            res = conclusions[0]
+            
+        else:
+            res = conclusions[1]
+        
+    
+    
+    output = """
+    =============== Reports ==============
+    
+        **Descriptive Statistics Summary**
+
+          sample-1 size: {0}
+          sample-1 mean: {1:.3f}
+          sample-1 dof: {2}
+          
+          sample-2 size: {3}
+          sample-2 mean: {4:.3f}
+          sample-2 dof: {5}
+          
+          mean difference: {6: .2f}
+          
+          Pooled Variance: {7: .4f}
+      
+        **Inferential Statistics Summary**
+
+          Test Type: Independent Samples {8} t-Test
+          degree of freedom: {9}
+          p-value: {10:.5f}
+          t-statistic (using pooled variance): {11: .3f}
+          t-critical: {12}
+          alpha-level: {13}
+      
+          ---------------------------------
+          
+    Conclusion: {14}
+    
+    ================== END =================
+    """
+    
+    print(output.format(x_size, 
+                        x_bar, 
+                        x_dof, 
+                        y_size, 
+                        y_bar, 
+                        y_dof, 
+                        mean_diff, 
+                        s2_p, 
+                        test_type, 
+                        degree_of_freedom, 
+                        p_value, 
+                        t_statistic, 
+                        t_critical_formatted, 
+                        alpha, 
+                        res))
