@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from scipy.stats import f
+from statsmodels.stats.multicomp import pairwise_tukeyhsd
 
 
 def cal_f(*args, alpha_level=0.05):
@@ -25,6 +26,7 @@ def cal_f(*args, alpha_level=0.05):
     grand_mean = np.mean(concate_np)
     
     ss_between = np.sum(sample_sizes*(group_means - grand_mean)**2)
+    ss_total = ss_between + ss_within
     
     ms_between = ss_between/dof_between
     ms_within = ss_within/dof_within
@@ -33,7 +35,9 @@ def cal_f(*args, alpha_level=0.05):
     f_critical = f.ppf(1-alpha_level, dof_between, dof_within)
     p_value = f.sf(f_statistic, dof_between, dof_within)
     
-    explained_var = ss_between/(ss_between + ss_within)
+    
+    # Calculate eta2
+    explained_var = ss_between/ss_total
     
     group_means_ = np.around(group_means, 2)
     
@@ -47,6 +51,7 @@ def cal_f(*args, alpha_level=0.05):
       Size in Each Sample: {0}
       Mean in Each Sample: {1}
       Grand Mean: {2: .2f}
+      Total Sum of Squares: {14: .4f}
       
       Between-Groups
         Sum of Squares: {3: .4f}
@@ -62,7 +67,7 @@ def cal_f(*args, alpha_level=0.05):
       P Value: {10: .4f}
       F Critical: {11: .4f}
       
-      Explained Variance (Eta_sqd): {12: .4f}
+      Explained Variance (eta_sqd): {12: .4f}
       
       ---------------------------------
       Conclusion: {13}
@@ -86,4 +91,5 @@ def cal_f(*args, alpha_level=0.05):
                            p_value, 
                            f_critical, 
                            explained_var, 
-                           res))
+                           res, 
+                           ss_total))
