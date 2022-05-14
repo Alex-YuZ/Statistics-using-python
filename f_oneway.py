@@ -93,3 +93,14 @@ def cal_f(*args, alpha_level=0.05):
                            explained_var, 
                            res, 
                            ss_total))
+
+    
+    labels_choices = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+    labels_collections = []
+    for i in range(len(sample_sizes)):
+        label = labels_choices.pop(0)
+        labels_collections.append(label)
+    group_labels = np.repeat(labels_collections, repeats=sample_sizes[0])
+    
+    tukey_hsd = pairwise_tukeyhsd(concate_np, group_labels)
+    print(tukey_hsd)
