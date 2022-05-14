@@ -36,3 +36,8 @@ drug_b = np.array([0.41, 0.39, 0.18, 0.23, 0.35])
 
 f_shoes = np.array([90, 28, 30, 10, 5, 9, 60])
 m_shoes = np.array([4, 120, 5, 3, 10, 3, 5, 13, 4, 10, 21])
+
+
+snapzi = np.array([15, 12, 14, 11])
+irisa = np.array([39, 45, 48, 60])
+lolamoon = np.array([65, 45, 32, 38])
