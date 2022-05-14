@@ -41,3 +41,7 @@ m_shoes = np.array([4, 120, 5, 3, 10, 3, 5, 13, 4, 10, 21])
 snapzi = np.array([15, 12, 14, 11])
 irisa = np.array([39, 45, 48, 60])
 lolamoon = np.array([65, 45, 32, 38])
+
+single = np.array([8, 7, 10, 6, 9])
+twin = np.array([4, 6, 7, 4, 9])
+triplet = np.array([4, 4, 7, 2, 3])
