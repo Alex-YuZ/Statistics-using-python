@@ -428,17 +428,17 @@ def t_test_ind_from_stats(x_bar, y_bar, x_size, y_size,
     """execute independent sample t-test given descriptive statistics
 
     Args:
-        x_bar (float): _description_
-        y_bar (float): _description_
-        x_size (int): _description_
-        y_size (int): _description_
-        ss_x (float, optional): _description_. Defaults to None.
-        ss_y (float, optional): _description_. Defaults to None.
-        s2_p (float, optional): _description_. Defaults to None.
-        pop_mean_diff (float, optional): _description_. Defaults to 0.
-        dof (_type_, optional): _description_. Defaults to None.
-        alpha (float, optional): _description_. Defaults to .05.
-        alternative (str, optional): _description_. Defaults to 'two_sided'.
+        x_bar (float): mean of sample 1
+        y_bar (float): mean of sample 2
+        x_size (int): size of sample 1
+        y_size (int): size of sample 2
+        ss_x (float, optional): sum of mean squared for sample 1. Defaults to None.
+        ss_y (float, optional): sum of mean squared for sample 2. Defaults to None.
+        s2_p (float, optional): Pooled variance if avaiable. Defaults to None.
+        pop_mean_diff (float, optional): population mean difference to compare. Defaults to 0.
+        dof (_type_, optional): degree of freedom in total. Defaults to None.
+        alpha (float, optional): alpha level to decide reatin/reject the null. Defaults to .05.
+        alternative (str, {'two_sided', 'less', 'greater'}): direction. Defaults to 'two_sided'.
     """
     
     mean_diff = x_bar - y_bar - pop_mean_diff
