@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from scipy.stats import f
 from statsmodels.stats.multicomp import pairwise_tukeyhsd
+from statsmodels.stats.libqsturng import qsturng
 
 
 def cal_f(*args, alpha_level=0.05):
@@ -46,7 +47,7 @@ def cal_f(*args, alpha_level=0.05):
     res = conclusions[0] if f_statistic >= f_critical else conclusions[1]
     
     print_out = """
-    =================ONE-WAY ANOVA TEST REPORT=================
+    ================= ONE-WAY ANOVA TEST REPORT =================
     
       Size in Each Sample: {0}
       Mean in Each Sample: {1}
@@ -72,13 +73,11 @@ def cal_f(*args, alpha_level=0.05):
       ---------------------------------
       Conclusion: {13}
       
-    ============================END============================
-      
-    
+    ==================== ONE-WAY ANOAVA END =======================   
     
     """
-    
-    print(print_out.format(sample_sizes, 
+    formatted_print = textwrap.dedent(print_out)
+    print(formatted_print.format(sample_sizes, 
                            group_means_, 
                            grand_mean, 
                            ss_between, 
@@ -93,28 +92,45 @@ def cal_f(*args, alpha_level=0.05):
                            explained_var, 
                            res, 
                            ss_total))
-    
-    flag = True
-    first = sample_sizes[0]
-    for i in sample_sizes:
-        if first != i:
-            flag = False
-            break
-        else:
-            continue
-            
-    if flag == True:
-        labels_choices = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
-        labels_collections = []
-        for i in range(len(sample_sizes)):
-            label = labels_choices.pop(0)
-            labels_collections.append(label)
-        group_labels = np.repeat(labels_collections, repeats=sample_sizes[0])
-        
-        tukey_hsd = pairwise_tukeyhsd(concate_np, group_labels)
-        print(tukey_hsd)
-        
+    if res == conclusions[1]:
+        print("No Need for Tukey's HSD as non-statistically significant from Aone-way ANOVA.")
     else:
-        print("Tukey's HSD analysis is not available as sample sizes are different.")
+        flag = True
+        first = sample_sizes[0]
+        for i in sample_sizes:
+            if first != i:
+                flag = False
+                break
+            else:
+                continue
+                
+        if flag == True:
+            labels_choices = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+            labels_collections = []
+            for i in range(len(sample_sizes)):
+                label = labels_choices.pop(0)
+                labels_collections.append(label)
+            group_labels = np.repeat(labels_collections, repeats=sample_sizes[0])
+            q_cirtical = qsturng(1-alpha_level, len(group_means), dof_within)
+            hsd_value = q_cirtical*np.sqrt(ms_within/sample_sizes[0])
+            # print("Critical Value of Studentized Range: {:.2f}".format(q_cirtical))
+            tukey_hsd = pairwise_tukeyhsd(concate_np, group_labels)
+            
+            hsd_res = """
+            =============== Multiple Comparison Test REPORT ===============
+            
+            Critical Q Value: {0:.2f}
+            Critical Tukey's HSD: {1:.2f}
+            
+            {2}
+            
+            ================= Multiple Comparison Test END ================
+            
+            """
+            formatted_res = textwrap.dedent(hsd_res)
+            print(formatted_res.format(q_cirtical, hsd_value, tukey_hsd))
+            
+        else:
+            print("Tukey's HSD analysis is not available as sample sizes are different.")
 
     
