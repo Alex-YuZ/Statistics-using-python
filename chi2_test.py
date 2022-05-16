@@ -37,23 +37,42 @@ def chi2_goodness_of_fit(obs, exp, alpha=.05):
     
     
 def chi2_independence(data, inds, cols, alpha=0.05):
-    """Execute chi-square pearson's test on obs. and exp. data"""
+    """Execute chi-square pearson's test on obs. and exp. data
+    
+    Args:
+        data (array_like): observation arrays
+        inds (array_like): labels for index
+        cols (array_like): labels for columns
+        alpha (float, optional): confidence level. Defaults to 0.05.
+    """
+    # convert to numpy array
     data = np.array(data)
+    
+    # calculate total size
     n_size = np.sum(data)
+    
+    # find the smaller in RxC
     k = min(data.shape)
     
-    
+    # calculate chi2 statistics using scipy.stats.chi2_contingency()
     chi2_statistic, p, dof, expected_np = chi2_contingency(data)
+    
+    # Look up chi2 critical value
     chi2_critical = chi2.ppf(1-alpha, dof)
     
+    # Calculate effect size in cramer's v
     cramer_v = np.sqrt(chi2_statistic/(n_size*(k-1)))
     
-    
+    # Convert input observation into pandas.dataframe
     obs_df = pd.DataFrame(data, index=inds, columns=cols)
+    
+    # Convert calculated expected values  into pandas.dataframe
     exp_df = pd.DataFrame(expected_np, index=inds, columns=cols).round(2)
     
+    # Make the judgement
     concl = "Reject the NULL" if p < alpha else "Fail to reject the NULL"
     
+    # print out strings
     print_out="""
     ============== Pearson's Chi-Square Test =============
     *** Descriptive Summary ***
@@ -72,7 +91,7 @@ def chi2_independence(data, inds, cols, alpha=0.05):
     
         Cramer's V (\u03D5): {8:.2f}
         
-    *** Observation and Expectation Values (Contigency Table) ***
+    *** Observation and Expectation Values (Contingency Table) ***
     
     Observation:
         {9}
@@ -87,9 +106,8 @@ def chi2_independence(data, inds, cols, alpha=0.05):
     ======================== END =========================
     """
 
+    # Get rid of indentation in printed reports
     fmt_print = textwrap.dedent(print_out)
-    
-    
     
     print(fmt_print.format(n_size, 
                            data.shape[0], 
