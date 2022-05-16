@@ -5,7 +5,7 @@ import pandas as pd
 def chi2_goodness_of_fit(obs, exp, alpha=.05):
     """Execute chi-square goodness of fit test on obs. and exp. data"""
     # Calculate Chi-Square statistic and P-value
-    chi_stat, p_val = chisquare([41,59], [33,67])
+    chi_stat, p_val = chisquare(obs, exp)
     
     # Calculate degree of freedom
     dof = len(obs) - 1
